@@ -1,14 +1,25 @@
 import React from 'react'
-import { Menu, Space, Checkbox, Tooltip } from 'antd'
+import { Menu, Space, Checkbox, Tooltip, Popover, Button } from 'antd'
+import { SettingOutlined } from '@ant-design/icons'
 import { Category, Type } from './AnnotationCategoryList'
+import ColorSettingsMenu from './ColorSettingsMenu'
 
 const AnnotationGroupItem = ({
   category,
   onChange,
-  checkedAnnotationGroupUids
+  checkedAnnotationGroupUids,
+  onStyleChange,
+  defaultAnnotationGroupStyles
 }: {
   category: Category
   onChange: Function
+  onStyleChange: Function
+  defaultAnnotationGroupStyles: {
+    [annotationGroupUID: string]: {
+      opacity: number
+      color: number[]
+    }
+  }
   checkedAnnotationGroupUids: Set<string>
 }): JSX.Element => {
   const { types } = category
@@ -60,6 +71,32 @@ const AnnotationGroupItem = ({
               >
                 {category.CodeMeaning}
               </Tooltip>
+              <Popover
+                placement='topLeft'
+                overlayStyle={{ width: '350px' }}
+                title='Display Settings'
+                content={() => (
+                  <ColorSettingsMenu
+                    annotationGroupsUIDs={types.reduce(
+                      (acc: string[], type) => {
+                        return [...acc, ...type.uids]
+                      },
+                      []
+                    )}
+                    onStyleChange={onStyleChange}
+                    defaultStyle={
+                      defaultAnnotationGroupStyles[types[0].uids[0]]
+                    }
+                  />
+                )}
+              >
+                <Button
+                  type='primary'
+                  shape='circle'
+                  style={{ marginLeft: '10px' }}
+                  icon={<SettingOutlined />}
+                />
+              </Popover>
             </Checkbox>
           </Space>
           {types.map((type: Type) => {
@@ -72,7 +109,10 @@ const AnnotationGroupItem = ({
               !isChecked &&
               uids.some((uid: string) => checkedAnnotationGroupUids.has(uid))
             return (
-              <div key={`${type.CodingSchemeDesignator}:${type.CodeMeaning}`} style={{ paddingLeft: '25px' }}>
+              <div
+                key={`${type.CodingSchemeDesignator}:${type.CodeMeaning}`}
+                style={{ paddingLeft: '25px' }}
+              >
                 <Checkbox
                   indeterminate={indeterminateType}
                   checked={isChecked}
@@ -88,6 +128,27 @@ const AnnotationGroupItem = ({
                   >
                     {CodeMeaning}
                   </Tooltip>
+                  <Popover
+                    placement='topLeft'
+                    overlayStyle={{ width: '350px' }}
+                    title='Display Settings'
+                    content={() => (
+                      <ColorSettingsMenu
+                        annotationGroupsUIDs={type.uids}
+                        onStyleChange={onStyleChange}
+                        defaultStyle={
+                          defaultAnnotationGroupStyles[type.uids[0]]
+                        }
+                      />
+                    )}
+                  >
+                    <Button
+                      type='primary'
+                      shape='circle'
+                      style={{ marginLeft: '10px' }}
+                      icon={<SettingOutlined />}
+                    />
+                  </Popover>
                 </Checkbox>
               </div>
             )

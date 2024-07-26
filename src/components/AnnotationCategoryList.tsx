@@ -65,10 +65,19 @@ const getCategories = (annotationGroups: any): Record<string, Category> => {
 const AnnotationCategoryList = ({
   annotationGroups,
   onChange,
+  onStyleChange,
+  defaultAnnotationGroupStyles,
   checkedAnnotationGroupUids
 }: {
   annotationGroups: dmv.annotation.AnnotationGroup[]
   onChange: Function
+  onStyleChange: Function
+  defaultAnnotationGroupStyles: {
+    [annotationGroupUID: string]: {
+      opacity: number
+      color: number[]
+    }
+  }
   checkedAnnotationGroupUids: Set<string>
 }): JSX.Element => {
   const categories: Record<string, Category> = getCategories(annotationGroups)
@@ -84,6 +93,8 @@ const AnnotationCategoryList = ({
         key={category.CodeMeaning}
         category={category}
         onChange={onChange}
+        onStyleChange={onStyleChange}
+        defaultAnnotationGroupStyles={defaultAnnotationGroupStyles}
         checkedAnnotationGroupUids={checkedAnnotationGroupUids}
       />
     )

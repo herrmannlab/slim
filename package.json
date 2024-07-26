@@ -76,6 +76,7 @@
     "react-error-boundary": "^3.1.4"
   },
   "resolutions": {
-    "nth-check": "2.0.1"
+    "nth-check": "2.0.1",
+    "wrap-ansi": "7.0.0"
   }
 }
